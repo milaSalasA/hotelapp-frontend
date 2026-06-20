@@ -1,0 +1,39 @@
+<div class="login-container">
+    <mat-card class="login-card">
+        <mat-card-header>
+            <mat-card-title>Login</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Username</mat-label>
+                    <input matInput formControlName="username" placeholder="email@example.com">
+                    @if (loginForm.get('username')?.hasError('required')) {
+                        <mat-error>Username is required</mat-error>
+                    }
+                    @if (loginForm.get('username')?.hasError('email')) {
+                        <mat-error>Invalid email format</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" formControlName="password">
+                    @if (loginForm.get('password')?.hasError('required')) {
+                        <mat-error>Password is required</mat-error>
+                    }
+                    @if (loginForm.get('password')?.hasError('minlength')) {
+                        <mat-error>Password must be at least 3 characters</mat-error>
+                    }
+                </mat-form-field>
+
+                <div class="actions">
+                    <a routerLink="/forgot" class="forgot-link">Forgot Password?</a>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!isFormValid() || isLoggingIn()">
+                        {{ isLoggingIn() ? 'Signing In...' : 'Sign In' }}
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -1,0 +1,54 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    @if (!isChildActive()) {
+      <mat-card-header class="login-header">
+        <div class="logo-container">
+          <img ngSrc="mitocode.png" width="180" height="60" alt="MitoCode Logo" class="login-logo" priority>
+        </div>
+        <mat-card-title>Recuperar Contraseña</mat-card-title>
+        <mat-card-subtitle>Ingresa tu correo electrónico para enviarte las instrucciones</mat-card-subtitle>
+      </mat-card-header>
+
+      @if (loading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+
+      <mat-card-content>
+        @if (message()) {
+          <div class="success-message">
+            <mat-icon>check_circle</mat-icon>
+            <p>{{ message() }}</p>
+          </div>
+        } @else {
+          <form (submit)="sendMail()" #forgotForm="ngForm" class="login-form">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Correo Electrónico</mat-label>
+              <input matInput 
+                     type="email"
+                     placeholder="Ej. usuario@dominio.com" 
+                     name="email" 
+                     [ngModel]="$email()" 
+                     (ngModelChange)="$email.set($event)"
+                     required 
+                     autocomplete="email">
+              <mat-icon matPrefix>email</mat-icon>
+              <mat-error>Ingrese un correo electrónico válido</mat-error>
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" class="full-width login-button" 
+                    type="submit" 
+                    [disabled]="!isFormValid() || loading()">
+              ENVIAR CORREO
+            </button>
+          </form>
+        }
+      </mat-card-content>
+
+      <mat-card-footer class="login-footer">
+        <p>¿Recordaste tu contraseña? <a routerLink="/login">Regresa al login</a></p>
+      </mat-card-footer>
+    }
+
+    <router-outlet></router-outlet>
+  </mat-card>
+</div>

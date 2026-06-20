@@ -1,0 +1,33 @@
+<button mat-flat-button (click)="change('line')">Line</button>
+<button mat-flat-button (click)="change('bar')">Bar</button>
+<button mat-flat-button (click)="change('doughnut')">Doughnut</button>
+<button mat-flat-button (click)="change('radar')">Radar</button>
+<button mat-flat-button (click)="change('pie')">Pie</button>
+
+<div [hidden]="!$chart()">
+    <canvas id="canvas"></canvas>
+</div>
+
+<button mat-flat-button (click)="viewReport()">View Report</button>
+<button mat-flat-button (click)="downloadReport()">Download Report</button>
+
+@if ($pdfSrc()) {
+        <pdf-viewer [src]="$pdfSrc()"
+                [render-text]="true"
+                [original-size]="false"
+                style="width: 800px; height: 800px;">
+        </pdf-viewer>
+}
+
+<mat-divider></mat-divider>
+
+<input id="flFile" type="file" style="display: none;" (change)="selectFile($event)">
+<button mat-flat-button onclick="document.getElementById('flFile').click()">Select File</button>
+<p>The file is {{$filename()}}</p>
+
+<button mat-flat-button [disabled]="!$selectedFiles()" (click)="upload()">Upload</button>
+<button mat-flat-button (click)="viewImage()">View Image</button>
+
+@if ($imageData()) {
+    <img [src]="$imageData()" alt="Image from DB">
+}

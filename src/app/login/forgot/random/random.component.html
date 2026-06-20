@@ -1,0 +1,54 @@
+@if ($validRandom()) {
+<mat-card-header class="login-header">
+  <div class="logo-container">
+    <img src="mitocode.png" width="180" height="60" alt="MitoCode Logo" class="login-logo">
+  </div>
+  <mat-card-title>Nueva Contraseña</mat-card-title>
+  <mat-card-subtitle>Ingresa tu nueva contraseña para completar el proceso</mat-card-subtitle>
+</mat-card-header>
+
+<mat-card-content>
+  <form [formGroup]="$form()" (ngSubmit)="onSubmit()" class="login-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nueva Contraseña</mat-label>
+      <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required>
+      <mat-icon matPrefix>lock</mat-icon>
+      <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword()">
+        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      @if ($form().get('password')?.hasError('required')) {
+        <mat-error>La contraseña es obligatoria</mat-error>
+      }
+      @if ($form().get('password')?.hasError('minlength')) {
+        <mat-error>La contraseña debe tener al menos 8 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Repetir Nueva Contraseña</mat-label>
+      <input matInput [type]="hideConfirmPassword() ? 'password' : 'text'" formControlName="confirmPassword" required>
+      <mat-icon matPrefix>lock</mat-icon>
+      <button mat-icon-button matSuffix (click)="toggleConfirmPasswordVisibility()" type="button" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword()">
+        <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      @if ($form().get('confirmPassword')?.hasError('required')) {
+        <mat-error>Debes repetir la contraseña</mat-error>
+      }
+      @if ($form().hasError('passwordMismatch') && $form().get('confirmPassword')?.touched) {
+        <mat-error>Las contraseñas no coinciden</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" class="full-width login-button" type="submit" [disabled]="$form().invalid || loading()">
+      CAMBIAR CONTRASEÑA
+    </button>
+  </form>
+</mat-card-content>
+
+<mat-card-footer class="login-footer">
+  <p>¿Recordaste tu contraseña? <a routerLink="/login">Regresa al login</a></p>
+</mat-card-footer>
+
+}@else {
+    <mat-toolbar>Link is not active</mat-toolbar>
+}
