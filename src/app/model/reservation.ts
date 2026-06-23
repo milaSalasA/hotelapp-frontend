@@ -1,9 +1,9 @@
 import { Room } from "./room";
 
 export class Reservation {
-    idReservation: number;
+    idReservation?: number;
     customerName: string;
-    checkInDate: Date;
-    checkOutDate: Date;
+    checkInDate: string;
+    checkOutDate: string;
     room: Room;
 }

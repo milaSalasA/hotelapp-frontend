@@ -1,0 +1,42 @@
+<div class="dashboard-container">
+    <mat-card class="welcome-card">
+      <mat-card-header>
+        <div mat-card-avatar class="welcome-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+        <mat-card-title>¡Bienvenido de nuevo!</mat-card-title>
+        <mat-card-subtitle>{{$userInfo().username}}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="welcome-text">
+          Estamos encantados de verte de nuevo en <strong>HOTELAPP</strong>. 
+          Este es tu centro de control donde puedes gestionar reservas, habitaciones y más de manera eficiente.
+        </p>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="quick-actions">
+          <h3>Acciones Rápidas</h3>
+          <div class="actions-grid">
+            <button mat-flat-button color="primary" routerLink="/pages/reservation-manager">
+              <mat-icon>event</mat-icon>
+              Reservas
+            </button>
+            <button mat-flat-button color="accent" routerLink="/pages/room-manager">
+              <mat-icon>hotel</mat-icon>
+              Habitaciones
+            </button>
+            <button mat-stroked-button routerLink="/pages/report">
+              <mat-icon>bar_chart</mat-icon>
+              Reportes
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+      
+      <mat-card-footer class="welcome-footer">
+        <small>Sesión iniciada correctamente</small>
+      </mat-card-footer>
+    </mat-card>
+  </div>

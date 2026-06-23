@@ -1,0 +1,54 @@
+<form [formGroup]="$form()" (submit)="operate()" class="example-container" #frmRoom="ngForm">
+
+  <div [hidden]="true">
+    <mat-form-field>
+      <input matInput formControlName="idRoom">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <mat-label>Número de habitación</mat-label>
+    <input matInput placeholder="e.g. 101" formControlName="numberDto">
+    @if ($f()['numberDto'].errors?.['required'] && $f()['numberDto'].touched) {
+      <small class="invalid">Es obligatorio</small>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Tipo</mat-label>
+    <mat-select formControlName="typeDto">
+      @for (type of roomTypes; track $index) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+    @if ($f()['typeDto'].errors?.['required'] && $f()['typeDto'].touched) {
+      <small class="invalid">Es obligatorio</small>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Precio por noche</mat-label>
+    <input matInput type="number" placeholder="0.00" formControlName="priceDto">
+    @if ($f()['priceDto'].errors?.['required'] && $f()['priceDto'].touched) {
+      <small class="invalid">Es obligatorio</small>
+    }
+    @if ($f()['priceDto'].errors?.['min'] && $f()['priceDto'].touched) {
+      <small class="invalid">El precio debe ser positivo</small>
+    }
+  </mat-form-field>
+
+  <mat-checkbox formControlName="availableDto">Disponible</mat-checkbox>
+
+  <div class="button-container">
+    <button mat-flat-button type="submit" [disabled]="frmRoom.invalid">
+      <span>OK</span>
+      <mat-icon>done</mat-icon>
+    </button>
+
+    <button mat-flat-button type="button" class="cancel-button" routerLink="/pages/room-manager">
+      <span>Cancelar</span>
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </div>
+
+</form>

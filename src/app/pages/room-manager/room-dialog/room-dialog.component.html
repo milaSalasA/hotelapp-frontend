@@ -1,0 +1,53 @@
+<mat-dialog-content>
+  <mat-toolbar>
+    <span>{{ $isEdit() ? 'Edit Room' : 'New Room' }}</span>
+  </mat-toolbar>
+
+  <form [formGroup]="$form()" (submit)="operate()" class="example-container">
+
+    <mat-form-field>
+      <mat-label>Room Number</mat-label>
+      <input matInput placeholder="e.g. 101" formControlName="numberDto">
+      @if ($f().numberDto.hasError('required')) {
+        <mat-error>Room number is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="typeDto">
+        @for (type of roomTypes; track $index) {
+          <mat-option [value]="type">{{ type }}</mat-option>
+        }
+      </mat-select>
+      @if ($f().typeDto.hasError('required')) {
+        <mat-error>Type is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Price per Night</mat-label>
+      <input matInput type="number" placeholder="0.00" formControlName="priceDto">
+      @if ($f().priceDto.hasError('required')) {
+        <mat-error>Price is required</mat-error>
+      }
+      @if ($f().priceDto.hasError('min')) {
+        <mat-error>Price must be positive</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-checkbox formControlName="availableDto">Available</mat-checkbox>
+
+    <div class="button-container">
+      <button mat-flat-button type="submit" [disabled]="$form().invalid">
+        <span>OK</span>
+        <mat-icon>done</mat-icon>
+      </button>
+      <button mat-flat-button type="button" class="cancel-button" (click)="close()">
+        <span>Cancel</span>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </div>
+
+  </form>
+</mat-dialog-content>

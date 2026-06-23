@@ -1,0 +1,34 @@
+table {
+  width: 100%;
+}
+
+.filter-field {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.badge-occupied {
+  background-color: #fce4ec;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+.fab-container {
+  padding: 8px 16px 16px;
+  display: flex;
+  justify-content: flex-end;
+}

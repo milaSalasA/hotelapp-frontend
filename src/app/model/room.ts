@@ -1,7 +1,7 @@
 export class Room {
     idRoom: number;
-    number: string;
-    type: string;
-    price: number;
-    available: boolean; 
+    numberDto: string;
+    typeDto: string;
+    priceDto: number;
+    availableDto: boolean;
 }

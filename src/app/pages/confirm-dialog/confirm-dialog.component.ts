@@ -7,13 +7,13 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
   standalone: true,
   imports: [MatDialogModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title>Confirm</h2>
+    <h2 mat-dialog-title>Confirmar</h2>
     <mat-dialog-content>
-      Are you sure you want to delete this item?
+      ¿Está seguro que quiere borrar este elemento?
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()">Cancel</button>
-      <button mat-flat-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Delete</button>
+      <button mat-button (click)="onNoClick()">Cancelar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Borrar</button>
     </mat-dialog-actions>
   `,
 })

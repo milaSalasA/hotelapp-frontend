@@ -1,11 +1,12 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ConsultService } from '../../services/consult.service';
 import { Chart, ChartType } from 'chart.js/auto';
 import { MatButtonModule } from '@angular/material/button';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { MatDividerModule } from '@angular/material/divider';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ReservationService } from '../../services/reservation.service';
+import { Reservation } from '../../model/reservation';
 
 @Component({
   selector: 'app-report',
@@ -19,55 +20,62 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ReportComponent {
 
-  private readonly consultSerice = inject(ConsultService);
+  private readonly reservationService = inject(ReservationService);
   private readonly sanitizer = inject(DomSanitizer);
 
-  protected $chartData = toSignal(this.consultSerice.callProcedureOrFunction(), { initialValue: [] });
+  protected $reservations = toSignal(this.reservationService.findAll(), { initialValue: [] });
 
   protected $chart = signal<Chart>(null);
-  protected $chartType = signal<ChartType>('line');
+  protected $chartType = signal<ChartType>('bar');
 
-  //pdfs
   protected $pdfSrc = signal<string>(null);
 
-  //images
   protected $filename = signal<string>(null);
   protected $selectedFiles = signal<FileList>(null);
   protected $imageData = signal<any>(null);
+  protected $uploadedFileId = signal<number>(null);
 
-  constructor(){
+  constructor() {
     effect(() => {
-      const data = this.$chartData();
+      const reservations = this.$reservations();
       const type = this.$chartType();
 
-      if (data && data.length > 0) {
-        this.renderChart(data, type);
+      if (reservations && reservations.length > 0) {
+        const chartData = this.aggregateByRoomType(reservations);
+        this.renderChart(chartData, type);
       }
     });
   }
 
-  private renderChart(data: any[], type: ChartType){
-
-    untracked( () => {
-    //(Evita dependencia circular)
-    const oldChart = this.$chart();
-    if (oldChart) {
-      oldChart.destroy();
+  private aggregateByRoomType(reservations: Reservation[]): { label: string; count: number }[] {
+    const counts: Record<string, number> = {};
+    for (const r of reservations) {
+      const type = r.room?.typeDto ?? 'Unknown';
+      counts[type] = (counts[type] ?? 0) + 1;
     }
+    return Object.entries(counts).map(([label, count]) => ({ label, count }));
+  }
 
-    const dates = data.map(item => item.consultdate);
-    const quantities = data.map(item => item.quantity);
+  private renderChart(data: { label: string; count: number }[], type: ChartType) {
+    untracked(() => {
+      const oldChart = this.$chart();
+      if (oldChart) {
+        oldChart.destroy();
+      }
 
-    const newChart = new Chart('canvas', {
-        type: type, 
+      const labels = data.map(item => item.label);
+      const quantities = data.map(item => item.count);
+
+      const newChart = new Chart('canvas', {
+        type,
         data: {
-          labels: dates,
+          labels,
           datasets: [
             {
-              label: 'Quantity',
+              label: 'Reservations',
               data: quantities,
               borderColor: '#3cba9f',
-              fill: false,   
+              fill: false,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -75,7 +83,7 @@ export class ReportComponent {
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 0, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
-              ],           
+              ],
               borderWidth: 1,
             },
           ],
@@ -86,30 +94,29 @@ export class ReportComponent {
             y: {
               display: true,
               beginAtZero: true,
-              ticks: { stepSize: 1 }
+              ticks: { stepSize: 1 },
             },
           },
         },
       });
 
       this.$chart.set(newChart);
-  });
+    });
   }
 
-  change(type: ChartType){
+  change(type: ChartType) {
     this.$chartType.set(type);
   }
 
-
-  viewReport(){
-    this.consultSerice.generateReport().subscribe(data => {
+  viewReport() {
+    this.reservationService.generateReport().subscribe(data => {
       const url = window.URL.createObjectURL(data);
       this.$pdfSrc.set(url);
     });
   }
 
-  downloadReport(){
-    this.consultSerice.generateReport().subscribe(data => {
+  downloadReport() {
+    this.reservationService.generateReport().subscribe(data => {
       const url = window.URL.createObjectURL(data);
       const a = document.createElement('a');
       a.setAttribute('style', 'display:none;');
@@ -122,27 +129,34 @@ export class ReportComponent {
     });
   }
 
-  selectFile(e: any){
+  selectFile(e: any) {
     const file: File = e.target.files[0];
     this.$filename.set(file.name);
     this.$selectedFiles.set(e.target.files);
   }
 
-  upload(){
+  upload() {
     const files = this.$selectedFiles();
-    if(files && files.length > 0){
-      this.consultSerice.saveFile(files[0]).subscribe();
+    if (files && files.length > 0) {
+      this.reservationService.saveFile(files[0]).subscribe(id => {
+        this.$uploadedFileId.set(id);
+        alert(`Archivo subido satisfactoriamente con ID: ${id}`);
+      });
     }
   }
 
-  viewImage(){
-    const ID = 1; //id del archivo a mostrar
-    this.consultSerice.readFile(ID).subscribe(data => {      
+  viewImage() {
+    const id = this.$uploadedFileId();
+    if (!id) {
+      alert('Por favor, suba un archivo primero');
+      return;
+    }
+    this.reservationService.readFile(id).subscribe(data => {
       this.convertToBase64(data);
     });
   }
 
-  private convertToBase64(file: Blob){    
+  private convertToBase64(file: Blob) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {

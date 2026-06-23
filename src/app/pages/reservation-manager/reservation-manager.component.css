@@ -1,0 +1,87 @@
+.form-card {
+  margin-bottom: 32px;
+}
+
+.form-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  max-width: 700px;
+}
+
+.form-container mat-form-field {
+  width: 100%;
+}
+
+.dates-row {
+  display: flex;
+  gap: 16px;
+}
+
+.date-field {
+  flex: 1;
+}
+
+.date-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d32f2f;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.conflict-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: #fff3e0;
+  border: 1px solid #ffb300;
+  border-radius: 4px;
+  padding: 10px 12px;
+  color: #e65100;
+  font-size: 13px;
+}
+
+.conflict-error mat-icon {
+  flex-shrink: 0;
+  color: #f57c00;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.table-section {
+  margin-top: 16px;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.table-header h3 {
+  margin: 0;
+}
+
+.filter-field {
+  width: 280px;
+}
+
+table {
+  width: 100%;
+}
