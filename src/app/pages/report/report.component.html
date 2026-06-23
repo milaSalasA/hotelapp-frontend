@@ -1,33 +1,114 @@
-<button mat-flat-button (click)="change('line')">Line</button>
-<button mat-flat-button (click)="change('bar')">Bar</button>
-<button mat-flat-button (click)="change('doughnut')">Doughnut</button>
-<button mat-flat-button (click)="change('radar')">Radar</button>
-<button mat-flat-button (click)="change('pie')">Pie</button>
-
-<div [hidden]="!$chart()">
-    <canvas id="canvas"></canvas>
+<!-- ── Page header ── -->
+<div class="page-header">
+  <div class="header-icon">
+    <mat-icon>bar_chart</mat-icon>
+  </div>
+  <div>
+    <h1 class="page-title">Reports</h1>
+    <p class="page-subtitle">Visualización y gestión de reservas</p>
+  </div>
 </div>
 
-<button mat-flat-button (click)="viewReport()">View Report</button>
-<button mat-flat-button (click)="downloadReport()">Download Report</button>
+<!-- ── Card 1: Chart ── -->
+<div class="card">
+  <div class="card-header">
+    <span class="dot"></span>
+    <h2 class="card-title">RESERVATIONS CHART</h2>
+  </div>
+  <div class="card-body">
 
-@if ($pdfSrc()) {
+    <div class="toggle-group">
+      <button mat-stroked-button [class.toggle-active]="$chartType() === 'line'"     (click)="change('line')">Line</button>
+      <button mat-stroked-button [class.toggle-active]="$chartType() === 'bar'"      (click)="change('bar')">Bar</button>
+      <button mat-stroked-button [class.toggle-active]="$chartType() === 'doughnut'" (click)="change('doughnut')">Doughnut</button>
+      <button mat-stroked-button [class.toggle-active]="$chartType() === 'radar'"    (click)="change('radar')">Radar</button>
+      <button mat-stroked-button [class.toggle-active]="$chartType() === 'pie'"      (click)="change('pie')">Pie</button>
+    </div>
+
+    <div class="chart-container" [hidden]="!$chart()">
+      <canvas id="canvas"></canvas>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Bottom grid ── -->
+<div class="bottom-grid">
+
+  <!-- Card 2: PDF Report -->
+  <div class="card">
+    <div class="card-header">
+      <span class="dot"></span>
+      <h2 class="card-title">PDF REPORT</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="btn-row">
+        <button mat-flat-button (click)="viewReport()">
+          <mat-icon>description</mat-icon>
+          View Report
+        </button>
+        <button mat-stroked-button (click)="downloadReport()">
+          <mat-icon>download</mat-icon>
+          Download
+        </button>
+      </div>
+
+      @if ($pdfSrc()) {
         <pdf-viewer [src]="$pdfSrc()"
-                [render-text]="true"
-                [original-size]="false"
-                style="width: 800px; height: 800px;">
+                    [render-text]="true"
+                    [original-size]="false"
+                    class="pdf-viewer">
         </pdf-viewer>
-}
+      } @else {
+        <div class="placeholder">
+          <mat-icon class="placeholder-icon">description</mat-icon>
+          <span>El PDF se mostrará aquí</span>
+        </div>
+      }
 
-<mat-divider></mat-divider>
+    </div>
+  </div>
 
-<input id="flFile" type="file" style="display: none;" (change)="selectFile($event)">
-<button mat-flat-button onclick="document.getElementById('flFile').click()">Select File</button>
-<p>The file is {{$filename()}}</p>
+  <!-- Card 3: File Manager -->
+  <div class="card">
+    <div class="card-header">
+      <span class="dot"></span>
+      <h2 class="card-title">FILE MANAGER</h2>
+    </div>
+    <div class="card-body">
 
-<button mat-flat-button [disabled]="!$selectedFiles()" (click)="upload()">Upload</button>
-<button mat-flat-button (click)="viewImage()">View Image</button>
+      <input id="flFile" type="file" style="display:none;" (change)="selectFile($event)">
 
-@if ($imageData()) {
-    <img [src]="$imageData()" alt="Image from DB">
-}
+      <div class="upload-row">
+        <button mat-stroked-button onclick="document.getElementById('flFile').click()">
+          <mat-icon>folder_open</mat-icon>
+          Select File
+        </button>
+        <span class="filename-chip">{{ $filename() ?? 'No file selected' }}</span>
+      </div>
+
+      <div class="upload-actions">
+        <button mat-flat-button [disabled]="!$selectedFiles()" (click)="upload()">
+          <mat-icon>upload</mat-icon>
+          Upload
+        </button>
+        <button mat-stroked-button (click)="viewImage()">
+          <mat-icon>image</mat-icon>
+          View Image
+        </button>
+      </div>
+
+      @if ($imageData()) {
+        <img [src]="$imageData()" alt="Uploaded image" class="uploaded-image">
+      } @else {
+        <div class="placeholder">
+          <mat-icon class="placeholder-icon">image</mat-icon>
+          <span>La imagen se mostrará aquí</span>
+        </div>
+      }
+
+    </div>
+  </div>
+
+</div>

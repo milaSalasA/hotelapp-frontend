@@ -17,13 +17,13 @@
 }
 
 .active {
-    background-color: #dcdcdcc1;
+    background-color: var(--mat-sys-primary-container) !important;
+    color: var(--mat-sys-on-primary-container) !important;
 }
 
-
-.myButton:focus{
-    box-shadow: 0 0 rgba(255, 255, 255, 1) !important;
-    transition:none !important;
-    background-color: rgba(255, 255, 255, 1) !important;
-    -webkit-tap-highlight-color:rgba(255, 255, 255, 1) !important;
+.myButton:focus {
+    box-shadow: 0 0 0 2px var(--mat-sys-primary) !important;
+    transition: none !important;
+    background-color: var(--mat-sys-primary-container) !important;
+    -webkit-tap-highlight-color: var(--mat-sys-primary-container) !important;
 }

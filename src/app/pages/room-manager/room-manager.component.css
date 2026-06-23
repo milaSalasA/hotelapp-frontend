@@ -16,15 +16,15 @@ table {
 }
 
 .badge-available {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.4);
 }
 
 .badge-occupied {
-  background-color: #fce4ec;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #e57373;
+  border: 1px solid rgba(244, 67, 54, 0.4);
 }
 
 .fab-container {

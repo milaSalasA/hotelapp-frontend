@@ -2,8 +2,8 @@ import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Chart, ChartType } from 'chart.js/auto';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { MatDividerModule } from '@angular/material/divider';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ReservationService } from '../../services/reservation.service';
 import { Reservation } from '../../model/reservation';
@@ -12,8 +12,8 @@ import { Reservation } from '../../model/reservation';
   selector: 'app-report',
   imports: [
     MatButtonModule,
+    MatIconModule,
     PdfViewerModule,
-    MatDividerModule
   ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.css',
@@ -74,27 +74,48 @@ export class ReportComponent {
             {
               label: 'Reservations',
               data: quantities,
-              borderColor: '#3cba9f',
+              borderColor: [
+                'rgb(99, 179, 237)',
+                'rgb(72, 187, 120)',
+                'rgb(246, 173, 85)',
+                'rgb(182, 120, 230)',
+                'rgb(252, 129, 74)',
+                'rgb(80, 213, 198)',
+              ],
               fill: false,
               backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 0, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
+                'rgba(99, 179, 237, 0.65)',
+                'rgba(72, 187, 120, 0.65)',
+                'rgba(246, 173, 85, 0.65)',
+                'rgba(182, 120, 230, 0.65)',
+                'rgba(252, 129, 74, 0.65)',
+                'rgba(80, 213, 198, 0.65)',
               ],
-              borderWidth: 1,
+              borderWidth: 2,
             },
           ],
         },
         options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: 'rgba(255, 255, 255, 0.85)',
+                font: { size: 13 },
+              },
+            },
+          },
           scales: {
-            x: { display: true },
+            x: {
+              display: true,
+              ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
+            },
             y: {
               display: true,
               beginAtZero: true,
-              ticks: { stepSize: 1 },
+              ticks: { stepSize: 1, color: 'rgba(255, 255, 255, 0.7)' },
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
             },
           },
         },
