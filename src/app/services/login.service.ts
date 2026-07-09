@@ -22,8 +22,8 @@ export class LoginService {
     return this.http.post<any>(this.url, body);
   }
 
-  logout(){        
-    return this.http.get(`${environment.HOST}/auth/logout`);
+  logout(){
+    return this.http.post(`${environment.HOST}/auth/logout`, {});
   }
 
   showUserInfo(){

@@ -284,6 +284,12 @@ export class ReportComponent {
       return;
     }
     this.reservationService.readFile(id).subscribe(dataUrl => {
+      // Solo confiar en data URLs de imágenes conocidas; evita XSS vía SVG/HTML.
+      const allowed = /^data:image\/(png|jpeg|webp|gif);base64,/i;
+      if (!allowed.test(dataUrl)) {
+        alert('El archivo no es una imagen válida.');
+        return;
+      }
       this.$imageData.set(this.sanitizer.bypassSecurityTrustResourceUrl(dataUrl));
     });
   }
