@@ -1,13 +1,19 @@
-table {
-  width: 100%;
+/* ── Inline form layout ── */
+.svc-form   { display: flex; flex-direction: column; gap: 4px; }
+.form-row   { display: flex; gap: 16px; flex-wrap: wrap; }
+.form-field { flex: 1; min-width: 180px; }
+.form-actions { display: flex; gap: 8px; }
+
+/* Table card */
+.svc-card { width: 100%; }
+
+/* Filter bar */
+.svc-filter-bar {
+  padding: 16px 16px 8px;
 }
 
-.filter-field {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.badge {
+/* Category badges */
+.cat-badge {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 12px;
@@ -15,44 +21,44 @@ table {
   font-weight: 500;
 }
 
-.badge-available {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #81c784;
-  border: 1px solid rgba(76, 175, 80, 0.4);
+.cat-FOOD {
+  background: rgba(245,158,11,.12);
+  color: #F59E0B;
+  border: 1px solid rgba(245,158,11,.3);
 }
 
-.badge-occupied {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #e57373;
-  border: 1px solid rgba(244, 67, 54, 0.4);
+.cat-BEVERAGE {
+  background: rgba(59,130,246,.12);
+  color: #3B82F6;
+  border: 1px solid rgba(59,130,246,.3);
 }
 
-.category-FOOD {
-  background-color: rgba(255, 152, 0, 0.15);
-  color: #ffb74d;
-  border: 1px solid rgba(255, 152, 0, 0.35);
+.cat-PERSONAL_CARE {
+  background: rgba(168,85,247,.12);
+  color: #A855F7;
+  border: 1px solid rgba(168,85,247,.3);
 }
 
-.category-BEVERAGE {
-  background-color: rgba(33, 150, 243, 0.15);
-  color: #64b5f6;
-  border: 1px solid rgba(33, 150, 243, 0.35);
+.cat-OTHER {
+  background: rgba(107,114,128,.12);
+  color: #6B7280;
+  border: 1px solid rgba(107,114,128,.3);
 }
 
-.category-PERSONAL_CARE {
-  background-color: rgba(156, 39, 176, 0.15);
-  color: #ce93d8;
-  border: 1px solid rgba(156, 39, 176, 0.35);
-}
+/* Table cells */
+.cell-secondary { color: var(--ux-txt2) !important; font-size: 12px !important; }
+.cell-price     { font-weight: 600; color: #22C55E; }
 
-.category-OTHER {
-  background-color: rgba(158, 158, 158, 0.15);
-  color: #bdbdbd;
-  border: 1px solid rgba(158, 158, 158, 0.35);
-}
+/* Table buttons */
+.tbl-btn { color: var(--ux-txt2) !important; }
+.tbl-btn.primary { color: var(--ux-primary) !important; }
+.tbl-btn.primary:hover { background: rgba(0,188,212,.08) !important; }
+.tbl-btn.warn:hover    { color: #F59E0B !important; background: rgba(245,158,11,.08) !important; }
+.tbl-btn.danger:hover  { color: #EF4444 !important; background: rgba(239,68,68,.08)  !important; }
 
-.fab-container {
-  padding: 8px 16px 16px;
-  display: flex;
-  justify-content: flex-end;
+.no-data {
+  text-align: center;
+  padding: 32px !important;
+  color: var(--ux-txt2) !important;
+  font-size: 13px !important;
 }

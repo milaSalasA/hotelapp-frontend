@@ -1,34 +1,43 @@
-table {
+/* ── Inline form layout ── */
+.room-form  { display: flex; flex-direction: column; gap: 4px; }
+.form-row   { display: flex; gap: 16px; flex-wrap: wrap; }
+.form-field { flex: 1; min-width: 180px; }
+.form-actions { display: flex; gap: 8px; }
+
+/* ── Table card ── */
+.rooms-card {
   width: 100%;
 }
 
-.filter-field {
-  width: 100%;
-  margin-bottom: 8px;
+/* Filter bar */
+.rooms-filter-bar {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ux-border);
 }
 
-.badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
+/* Room number */
+.room-number {
+  font-weight: 700;
+  color: var(--ux-primary);
+  font-size: 15px;
 }
 
-.badge-available {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #81c784;
-  border: 1px solid rgba(76, 175, 80, 0.4);
-}
+/* Price */
+.cell-price { font-weight: 600; color: #22C55E; }
 
-.badge-occupied {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #e57373;
-  border: 1px solid rgba(244, 67, 54, 0.4);
-}
+/* Celda Secundaria */
+.cell-secondary { color: var(--ux-txt2) !important; font-size: 12px !important; }
 
-.fab-container {
-  padding: 8px 16px 16px;
-  display: flex;
-  justify-content: flex-end;
+/* Action buttons */
+.tbl-btn { color: var(--ux-txt2) !important; }
+.tbl-btn.primary:hover { color: var(--ux-primary) !important; background: rgba(0,188,212,.08) !important; }
+.tbl-btn.warn:hover    { color: #F59E0B !important; background: rgba(245,158,11,.08) !important; }
+.tbl-btn.danger:hover  { color: #EF4444 !important; background: rgba(239,68,68,.08) !important; }
+
+/* No-data fila */
+.no-data {
+  text-align: center;
+  padding: 32px !important;
+  color: var(--ux-txt2) !important;
+  font-size: 13px !important;
 }

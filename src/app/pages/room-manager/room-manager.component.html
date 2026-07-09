@@ -1,65 +1,179 @@
 <router-outlet></router-outlet>
 
-<mat-form-field appearance="outline" class="filter-field">
-  <mat-label>Buscar habitación</mat-label>
-  <mat-icon matPrefix>search</mat-icon>
-  <input matInput (keyup)="applyFilter($event)" placeholder="Número, tipo..." #input>
-</mat-form-field>
+<!-- ── Page header ── -->
+<div class="ux-page-header">
+  <div>
+    <h1>Habitaciones</h1>
+    <p>Gestión y disponibilidad del inventario</p>
+  </div>
+  <button mat-flat-button class="ux-btn-primary" (click)="$showForm.set(!$showForm())">
+    <mat-icon>{{ $showForm() ? 'close' : 'add' }}</mat-icon>
+    {{ $showForm() ? 'Cancelar' : 'Nueva Habitación' }}
+  </button>
+</div>
 
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="$dataSource()" matSort>
+<!-- ── Inline new-room form (collapsible) ── -->
+<div class="form-panel" [class.form-panel-open]="$showForm()">
+  <div class="form-panel-inner">
+    <div class="form-panel-title">
+      <mat-icon>hotel</mat-icon>
+      Nueva Habitación
+    </div>
+
+    <form [formGroup]="$newRoomForm()" (ngSubmit)="saveNewRoom()" class="room-form">
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Número de habitación</mat-label>
+          <input matInput placeholder="Ej. 101" formControlName="numberDto">
+          @if ($nf().numberDto.touched && $nf().numberDto.hasError('required')) {
+            <mat-error>Es obligatorio</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Tipo</mat-label>
+          <mat-select formControlName="typeDto">
+            @for (type of roomTypes; track $index) {
+              <mat-option [value]="type">{{ type }}</mat-option>
+            }
+          </mat-select>
+          @if ($nf().typeDto.touched && $nf().typeDto.hasError('required')) {
+            <mat-error>Es obligatorio</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Precio por noche (S/)</mat-label>
+          <input matInput type="number" placeholder="0.00" formControlName="priceDto">
+          @if ($nf().priceDto.touched && $nf().priceDto.hasError('required')) {
+            <mat-error>Es obligatorio</mat-error>
+          }
+          @if ($nf().priceDto.touched && $nf().priceDto.hasError('min')) {
+            <mat-error>Debe ser mayor a 0</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-checkbox formControlName="availableDto" class="form-check">Disponible</mat-checkbox>
+
+      <div class="form-actions" style="margin-top:16px">
+        <button mat-flat-button type="submit" class="ux-btn-primary" [disabled]="$isSaving()">
+          @if ($isSaving()) {
+            <mat-spinner diameter="16"></mat-spinner>Guardando...
+          } @else {
+            <mat-icon>save</mat-icon>Guardar Habitación
+          }
+        </button>
+        <button mat-stroked-button type="button" (click)="$newRoomForm.set(buildForm()); $showForm.set(false)">
+          <mat-icon>refresh</mat-icon>
+          Limpiar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- ── Status KPI cards ── -->
+<div class="ux-stat-grid">
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon gr"><mat-icon>check_circle</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">{{ $availableCount() }}</div>
+      <div class="ux-stat-label">Disponibles</div>
+    </div>
+  </div>
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon re"><mat-icon>person</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">{{ $occupiedCount() }}</div>
+      <div class="ux-stat-label">Ocupadas</div>
+    </div>
+  </div>
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon am"><mat-icon>cleaning_services</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">—</div>
+      <div class="ux-stat-label">En limpieza</div>
+    </div>
+  </div>
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon pu"><mat-icon>build</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">—</div>
+      <div class="ux-stat-label">En mantenimiento</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Table card ── -->
+<div class="rooms-card ux-card">
+
+  <!-- Filter bar -->
+  <div class="rooms-filter-bar">
+    <div class="ux-search">
+      <mat-icon>search</mat-icon>
+      <input (keyup)="applyFilter($event)" placeholder="Buscar por número, tipo..." #input>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <table mat-table [dataSource]="$dataSource()" matSort class="ux-mat-table">
 
     <ng-container matColumnDef="idRoom">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-      <td mat-cell *matCellDef="let row">{{ row.idRoom }}</td>
+      <td mat-cell *matCellDef="let row" class="cell-secondary">{{ row.idRoom }}</td>
     </ng-container>
 
     <ng-container matColumnDef="numberDto">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>NÚMERO</th>
-      <td mat-cell *matCellDef="let row">{{ row.numberDto }}</td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>N° Hab.</th>
+      <td mat-cell *matCellDef="let row"><span class="room-number">{{ row.numberDto }}</span></td>
     </ng-container>
 
     <ng-container matColumnDef="typeDto">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>TIPO</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
       <td mat-cell *matCellDef="let row">{{ row.typeDto }}</td>
     </ng-container>
 
     <ng-container matColumnDef="priceDto">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>PRECIO/NOCHE</th>
-      <td mat-cell *matCellDef="let row">{{ row.priceDto | currency }}</td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Precio / noche</th>
+      <td mat-cell *matCellDef="let row" class="cell-price">{{ row.priceDto | currency:'PEN':'S/ ' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="availableDto">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>DISPONIBILIDAD</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
       <td mat-cell *matCellDef="let row">
-        <span class="badge" [class.badge-available]="row.availableDto" [class.badge-occupied]="!row.availableDto">
+        <span class="ux-badge" [class.av]="row.availableDto" [class.oc]="!row.availableDto">
+          <span class="dot"></span>
           {{ row.availableDto ? 'Disponible' : 'Ocupada' }}
         </span>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="photos">
-      <th mat-header-cell *matHeaderCellDef>FOTOS</th>
+      <th mat-header-cell *matHeaderCellDef>Fotos</th>
       <td mat-cell *matCellDef="let row">
-        <button mat-icon-button color="primary" title="Ver fotos" (click)="openPhotos(row)">
+        <button mat-icon-button class="tbl-btn primary" title="Ver fotos" (click)="openPhotos(row)">
           <mat-icon>photo_library</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let row">
-        <button mat-icon-button title="Editar" [routerLink]="['edit', row.idRoom]">
+        <button mat-icon-button class="tbl-btn primary" title="Editar" [routerLink]="['edit', row.idRoom]">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button
+        <button mat-icon-button class="tbl-btn"
+          [class.primary]="!row.availableDto"
+          [class.warn]="row.availableDto"
           [title]="row.availableDto ? 'Marcar como Ocupada' : 'Marcar como Disponible'"
-          [color]="row.availableDto ? 'warn' : 'primary'"
           (click)="toggleAvailability(row)">
           <mat-icon>{{ row.availableDto ? 'do_not_disturb' : 'check_circle' }}</mat-icon>
         </button>
-        <button mat-icon-button color="warn" title="Eliminar" (click)="delete(row.idRoom)">
+        <button mat-icon-button class="tbl-btn danger" title="Eliminar" (click)="delete(row.idRoom)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -69,15 +183,9 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="6">No hay habitaciones que coincidan con "{{ input.value }}"</td>
+      <td class="mat-cell no-data" colspan="7">Sin resultados para "{{ input.value }}"</td>
     </tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Páginas de habitaciones"></mat-paginator>
-
-  <div class="fab-container">
-    <button mat-fab color="primary" routerLink="new" title="Nueva Habitación">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]" aria-label="Páginas"></mat-paginator>
 </div>

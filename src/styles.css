@@ -1,4 +1,260 @@
-/* You can add global styles to this file, and also import other style files */
+/* ── Variables Custom UX – light (por defecto) ── */
+:root {
+  --ux-primary:    #00BCD4;
+  --ux-primary-dk: #0097A7;
+  --ux-accent:     #7C4DFF;
+
+  --ux-bg:      #F4F6F9;
+  --ux-surface: #FFFFFF;
+  --ux-surface2: #F8FAFC;
+
+  --ux-sb-bg:      #c31e1e;
+  --ux-sb-act-bg:  #E0F7FA;
+  --ux-sb-act:     #0097A7;
+
+  --ux-bar-bg:  #FFFFFF;
+  --ux-txt:     #1E293B;
+  --ux-txt2:    #64748B;
+  --ux-border:  #E2E8F0;
+
+  --ux-sh:  0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.04);
+  --ux-sh2: 0 1px 4px rgba(0,0,0,.06);
+
+  --ux-inp:  #F8FAFC;
+  --ux-th:   #F1F5F9;
+  --ux-rhov: #F8FAFC;
+
+  /* Status badges */
+  --ux-av-bg: #DCFCE7; --ux-av-c: #166534;
+  --ux-oc-bg: #FEE2E2; --ux-oc-c: #991B1B;
+  --ux-cl-bg: #FEF9C3; --ux-cl-c: #854D0E;
+  --ux-mn-bg: #EDE9FE; --ux-mn-c: #5B21B6;
+  --ux-en-bg: rgba(0,188,212,.12); --ux-en-c: #0097A7;
+}
+
+/* ── Dark theme overrides ── */
+[data-theme="dark"] {
+  --ux-bg:      #0F172A;
+  --ux-surface: #1E293B;
+  --ux-surface2: #162032;
+
+  --ux-sb-bg:     #1E293B;
+  --ux-sb-act-bg: rgba(0,188,212,.15);
+  --ux-sb-act:    #22D3EE;
+
+  --ux-bar-bg: #1E293B;
+  --ux-txt:    #F1F5F9;
+  --ux-txt2:   #94A3B8;
+  --ux-border: #334155;
+
+  --ux-inp:  #162032;
+  --ux-th:   #162032;
+  --ux-rhov: rgba(255,255,255,.04);
+
+  --ux-av-bg: rgba(34,197,94,.15);  --ux-av-c: #4ADE80;
+  --ux-oc-bg: rgba(239,68,68,.15);  --ux-oc-c: #F87171;
+  --ux-cl-bg: rgba(234,179,8,.15);  --ux-cl-c: #FDE047;
+  --ux-mn-bg: rgba(139,92,246,.15); --ux-mn-c: #A78BFA;
+  --ux-en-bg: rgba(0,188,212,.15);  --ux-en-c: #22D3EE;
+}
+
+/* ── Global resets / utilities ── */
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ux-border); border-radius: 3px; }
+
+/* ── Shared badge ── */
+.ux-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ux-badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.ux-badge.av { background: var(--ux-av-bg); color: var(--ux-av-c); }
+.ux-badge.av .dot { background: #22C55E; }
+.ux-badge.oc { background: var(--ux-oc-bg); color: var(--ux-oc-c); }
+.ux-badge.oc .dot { background: #EF4444; }
+.ux-badge.cl { background: var(--ux-cl-bg); color: var(--ux-cl-c); }
+.ux-badge.cl .dot { background: #F59E0B; }
+.ux-badge.mn { background: var(--ux-mn-bg); color: var(--ux-mn-c); }
+.ux-badge.mn .dot { background: #8B5CF6; }
+.ux-badge.en { background: var(--ux-en-bg); color: var(--ux-en-c); }
+.ux-badge.en .dot { background: #00BCD4; }
+
+/* ── Shared stat card ── */
+.ux-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ux-stat-card {
+  background: var(--ux-surface);
+  border: 1px solid var(--ux-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--ux-sh);
+  transition: transform .15s;
+}
+.ux-stat-card:hover { transform: translateY(-2px); }
+
+.ux-stat-icon {
+  width: 46px; height: 46px; min-width: 46px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.ux-stat-icon.cy { background: rgba(0,188,212,.12); color: #00BCD4; }
+.ux-stat-icon.gr { background: rgba(34,197,94,.12);  color: #22C55E; }
+.ux-stat-icon.am { background: rgba(245,158,11,.12); color: #F59E0B; }
+.ux-stat-icon.re { background: rgba(239,68,68,.12);  color: #EF4444; }
+.ux-stat-icon.pu { background: rgba(139,92,246,.12); color: #8B5CF6; }
+.ux-stat-icon.bl { background: rgba(59,130,246,.12); color: #3B82F6; }
+
+.ux-stat-value { font-size: 24px; font-weight: 700; color: var(--ux-txt); line-height: 1; }
+.ux-stat-label { font-size: 12px; color: var(--ux-txt2); margin-top: 3px; font-weight: 500; }
+.ux-stat-trend { font-size: 11px; color: #22C55E; margin-top: 3px; }
+
+/* ── Shared table card ── */
+.ux-card {
+  background: var(--ux-surface);
+  border: 1px solid var(--ux-border);
+  border-radius: 14px;
+  box-shadow: var(--ux-sh);
+  overflow: hidden;
+}
+
+.ux-card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ux-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ux-card-title { font-size: 15px; font-weight: 600; color: var(--ux-txt); }
+
+/* ── Shared page header ── */
+.ux-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ux-page-header h1 { font-size: 22px; font-weight: 700; color: var(--ux-txt); }
+.ux-page-header p  { font-size: 13px; color: var(--ux-txt2); margin-top: 2px; }
+
+/* ── Shared search bar ── */
+.ux-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ux-inp);
+  border: 1px solid var(--ux-border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: var(--ux-txt2);
+  max-width: 360px;
+}
+.ux-search input {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--ux-txt);
+  width: 100%;
+}
+.ux-search input::placeholder { color: var(--ux-txt2); }
+.ux-search mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ── Table overrides ── */
+.ux-mat-table { background: transparent !important; }
+.ux-mat-table .mat-mdc-header-row { background: var(--ux-th) !important; }
+.ux-mat-table .mat-mdc-row:hover  { background: var(--ux-rhov) !important; }
+.ux-mat-table .mat-mdc-header-cell {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--ux-txt2) !important;
+  border-bottom-color: var(--ux-border) !important;
+}
+.ux-mat-table .mat-mdc-cell {
+  border-bottom-color: var(--ux-border) !important;
+  color: var(--ux-txt);
+  font-size: 13px;
+}
+mat-paginator {
+  background: var(--ux-surface) !important;
+  border-top: 1px solid var(--ux-border);
+}
+
+/* ── Shared primary button ── */
+.ux-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--ux-primary) !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 10px !important;
+  padding: 0 18px !important;
+  height: 40px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: background .15s, transform .1s !important;
+}
+.ux-btn-primary:hover:not([disabled]) { background: var(--ux-primary-dk) !important; transform: translateY(-1px); }
+.ux-btn-primary .mdc-button__label { display: inline-flex; align-items: center; gap: 4px; }
+
+/* ── Shared collapsible form panel ── */
+.form-panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .3s cubic-bezier(.4,0,.2,1), opacity .25s ease;
+  margin-bottom: 0;
+}
+.form-panel-open {
+  max-height: 700px;
+  opacity: 1;
+  margin-bottom: 24px;
+}
+.form-panel-inner {
+  background: var(--ux-surface);
+  border: 1px solid var(--ux-border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--ux-sh);
+}
+.form-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ux-txt);
+  margin-bottom: 20px;
+}
+.form-panel-title mat-icon { color: var(--ux-primary); }
+
+/* ── Legacy cancel button ── */
 .cancel-button {
   background-color: #cf6679 !important;
   color: white !important;

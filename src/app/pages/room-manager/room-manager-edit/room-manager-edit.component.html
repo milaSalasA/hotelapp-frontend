@@ -1,54 +1,60 @@
-<form [formGroup]="$form()" (submit)="operate()" class="example-container" #frmRoom="ngForm">
-
-  <div [hidden]="true">
-    <mat-form-field>
-      <input matInput formControlName="idRoom">
-    </mat-form-field>
+<div class="edit-wrapper">
+  <div class="edit-title">
+    <mat-icon>hotel</mat-icon>
+    Datos de la Habitación
   </div>
 
-  <mat-form-field>
-    <mat-label>Número de habitación</mat-label>
-    <input matInput placeholder="e.g. 101" formControlName="numberDto">
-    @if ($f()['numberDto'].errors?.['required'] && $f()['numberDto'].touched) {
-      <small class="invalid">Es obligatorio</small>
-    }
-  </mat-form-field>
+  <form [formGroup]="$form()" (submit)="operate()" class="example-container" #frmRoom="ngForm">
 
-  <mat-form-field>
-    <mat-label>Tipo</mat-label>
-    <mat-select formControlName="typeDto">
-      @for (type of roomTypes; track $index) {
-        <mat-option [value]="type">{{ type }}</mat-option>
+    <div [hidden]="true">
+      <mat-form-field>
+        <input matInput formControlName="idRoom">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Número de habitación</mat-label>
+      <input matInput placeholder="Ej. 101" formControlName="numberDto">
+      @if ($f()['numberDto'].errors?.['required'] && $f()['numberDto'].touched) {
+        <mat-error>Es obligatorio</mat-error>
       }
-    </mat-select>
-    @if ($f()['typeDto'].errors?.['required'] && $f()['typeDto'].touched) {
-      <small class="invalid">Es obligatorio</small>
-    }
-  </mat-form-field>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Precio por noche</mat-label>
-    <input matInput type="number" placeholder="0.00" formControlName="priceDto">
-    @if ($f()['priceDto'].errors?.['required'] && $f()['priceDto'].touched) {
-      <small class="invalid">Es obligatorio</small>
-    }
-    @if ($f()['priceDto'].errors?.['min'] && $f()['priceDto'].touched) {
-      <small class="invalid">El precio debe ser positivo</small>
-    }
-  </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="typeDto">
+        @for (type of roomTypes; track $index) {
+          <mat-option [value]="type">{{ type }}</mat-option>
+        }
+      </mat-select>
+      @if ($f()['typeDto'].errors?.['required'] && $f()['typeDto'].touched) {
+        <mat-error>Es obligatorio</mat-error>
+      }
+    </mat-form-field>
 
-  <mat-checkbox formControlName="availableDto">Disponible</mat-checkbox>
+    <mat-form-field appearance="outline">
+      <mat-label>Precio por noche (S/)</mat-label>
+      <input matInput type="number" placeholder="0.00" formControlName="priceDto">
+      @if ($f()['priceDto'].errors?.['required'] && $f()['priceDto'].touched) {
+        <mat-error>Es obligatorio</mat-error>
+      }
+      @if ($f()['priceDto'].errors?.['min'] && $f()['priceDto'].touched) {
+        <mat-error>El precio debe ser positivo</mat-error>
+      }
+    </mat-form-field>
 
-  <div class="button-container">
-    <button mat-flat-button type="submit" [disabled]="frmRoom.invalid">
-      <span>OK</span>
-      <mat-icon>done</mat-icon>
-    </button>
+    <mat-checkbox formControlName="availableDto">Disponible</mat-checkbox>
 
-    <button mat-flat-button type="button" class="cancel-button" routerLink="/pages/room-manager">
-      <span>Cancelar</span>
-      <mat-icon>cancel</mat-icon>
-    </button>
-  </div>
+    <div class="button-container">
+      <button mat-flat-button class="ux-btn-primary" type="submit" [disabled]="frmRoom.invalid">
+        <mat-icon>done</mat-icon>
+        Guardar
+      </button>
+      <button mat-stroked-button type="button" class="cancel-button" routerLink="/pages/room-manager">
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+      </button>
+    </div>
 
-</form>
+  </form>
+</div>

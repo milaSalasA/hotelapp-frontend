@@ -1,52 +1,162 @@
-<div class="example-container">
-    <mat-toolbar class="example-toolbar">
-        <button mat-icon-button (click)="sidenav.toggle()">
-            @if (!sidenav.opened) {
-                <mat-icon>menu</mat-icon>
-            }@else {
-                <mat-icon>close</mat-icon>
-            }
+<div class="app-shell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" [class.sidebar-collapsed]="$collapsed()">
+
+    <!-- Brand -->
+    <a class="sidebar-brand" routerLink="/pages/dashboard">
+      <div class="brand-logo">H</div>
+      <div class="brand-text">
+        <span class="brand-name">HOTELAPP</span>
+        <span class="brand-subtitle">Sistema de Gestión</span>
+      </div>
+    </a>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+
+      <!-- Principal -->
+      <div class="nav-section-lbl">Principal</div>
+      @for (m of $menuPrincipal(); track m.idMenu) {
+        <a class="nav-item" [routerLink]="m.url" routerLinkActive="nav-item-active"
+           [matTooltip]="$collapsed() ? m.name : ''" matTooltipPosition="right">
+          <mat-icon class="nav-icon">{{ m.icon }}</mat-icon>
+          <span class="nav-label">{{ m.name }}</span>
+        </a>
+      }
+
+      <!-- Gestión -->
+      <div class="nav-section-lbl">Gestión</div>
+      @for (m of $menuGestion(); track m.idMenu) {
+        <a class="nav-item" [routerLink]="m.url" routerLinkActive="nav-item-active"
+           [matTooltip]="$collapsed() ? m.name : ''" matTooltipPosition="right">
+          <mat-icon class="nav-icon">{{ m.icon }}</mat-icon>
+          <span class="nav-label">{{ m.name }}</span>
+        </a>
+      }
+
+      <!-- Análisis -->
+      <div class="nav-section-lbl">Análisis</div>
+      @for (m of $menuAnalisis(); track m.idMenu) {
+        <a class="nav-item" [routerLink]="m.url" routerLinkActive="nav-item-active"
+           [matTooltip]="$collapsed() ? m.name : ''" matTooltipPosition="right">
+          <mat-icon class="nav-icon">{{ m.icon }}</mat-icon>
+          <span class="nav-label">{{ m.name }}</span>
+        </a>
+      }
+
+      <!-- Tributario y Financiero -->
+      <div class="nav-section-lbl">Tributario y Financiero</div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Registro de Ventas' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">receipt_long</mat-icon>
+        <span class="nav-label">Registro de Ventas</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Registro de Compras' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">receipt_long</mat-icon>
+        <span class="nav-label">Registro de Compras</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Facturación Electrónica' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">description</mat-icon>
+        <span class="nav-label">Facturación Electrónica</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Libro Diario' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">book</mat-icon>
+        <span class="nav-label">Libro Diario</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Libro Mayor' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">book</mat-icon>
+        <span class="nav-label">Libro Mayor</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Hoja de Trabajo' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">account_balance</mat-icon>
+        <span class="nav-label">Hoja de Trabajo</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Estados Financieros' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">account_balance</mat-icon>
+        <span class="nav-label">Estados Financieros</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+      <div class="nav-item nav-item-soon"
+           [matTooltip]="$collapsed() ? 'Análisis Financiero' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon">account_balance</mat-icon>
+        <span class="nav-label">Análisis Financiero</span>
+        <span class="nav-soon-chip">Próximo</span>
+      </div>
+
+    </nav>
+
+    <!-- Footer user card -->
+    <div class="sidebar-footer">
+      <div class="user-card" (click)="openAccount()">
+        <div class="user-avatar">
+          <mat-icon style="font-size:18px;width:18px;height:18px">person</mat-icon>
+        </div>
+        <div class="user-info">
+          <span class="user-name">Mi cuenta</span>
+          <span class="user-role">Ver perfil</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- Toolbar -->
+    <header class="toolbar">
+      <button mat-icon-button class="toolbar-btn" (click)="toggleSidebar()" title="Menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="toolbar-title">{{ $pageTitle() }}</span>
+
+      <div class="toolbar-spacer"></div>
+
+      <!-- Theme toggle -->
+      <div class="theme-toggle-wrap">
+        <mat-icon class="theme-icon">wb_sunny</mat-icon>
+        <button class="theme-toggle" [class.dark]="theme.isDark()" (click)="theme.toggle()" title="Cambiar tema">
+          <div class="toggle-knob">
+            <mat-icon class="knob-icon">{{ theme.isDark() ? 'bedtime' : 'wb_sunny' }}</mat-icon>
+          </div>
         </button>
+        <mat-icon class="theme-icon">bedtime</mat-icon>
+      </div>
 
-        <span class="app-title" [routerLink]="['/pages/dashboard']">HOTELAPP</span>
-
-        <span class="example-spacer"></span>
-
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
+      <!-- Account + logout menu -->
+      <button mat-icon-button class="toolbar-btn" [matMenuTriggerFor]="accountMenu">
+        <div class="toolbar-avatar">R</div>
+      </button>
+      <mat-menu #accountMenu="matMenu">
+        <button mat-menu-item (click)="openAccount()">
+          <mat-icon>account_box</mat-icon>
+          <span>Mi cuenta</span>
         </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    </header>
 
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="openAccount()">
-                <mat-icon>account_box</mat-icon>
-                <span>My account</span>
-            </button>
-            <button mat-menu-item (click)="sidenav.opened = false" (click)="logout()">
-                <mat-icon>exit_to_app</mat-icon>
-                <span>Logout</span>
-            </button>
-        </mat-menu>
-    </mat-toolbar>
-    
-    <mat-sidenav-container class="example-sidenav-container">
-        <mat-sidenav #sidenav style="width: 250px" mode="push">
+    <!-- Routed content -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
 
-            <img src="milanesacode.png" width="128" style="margin-left: 20px; cursor: pointer;"
-                 [routerLink]="['/pages/dashboard']" (click)="sidenav.close()">
-
-            @for (m of $menus(); track $index) {
-                <mat-divider></mat-divider>
-                <button class="myButton" [routerLinkActive]="['active']"  mat-menu-item (click)="sidenav.toggle()"
-                    [routerLink]="m.url" >
-                    <mat-icon>{{m.icon}}</mat-icon>
-                    <span>{{m.name}}</span>
-                </button>
-            }
-        </mat-sidenav> 
-
-        <mat-sidenav-content>
-            <router-outlet></router-outlet>            
-        </mat-sidenav-content>
-
-    </mat-sidenav-container>
+  </div>
 </div>

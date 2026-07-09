@@ -1,8 +1,8 @@
 import { Component, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -41,11 +41,11 @@ function checkOutAfterCheckIn(control: AbstractControl): ValidationErrors | null
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatCardModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     CurrencyPipe,
     SlicePipe,
   ],
@@ -80,7 +80,31 @@ export class ReservationManagerComponent {
   protected $paginator = viewChild(MatPaginator);
   protected $sort = viewChild(MatSort);
 
-  // ── Expandable row state ──────────────────────────────────────────────────
+  // ── Fila estática  expandible ──────────────────────────────────────────────────
+  protected $showForm = signal(false);
+
+  // ── KPI signals ──────────────────────────────────────────────────────────
+  protected $totalRes = computed(() => this.$reservations().length);
+  protected $pendingRes = computed(() =>
+    this.$reservations().filter(r => new Date(r.checkInDate) > new Date()).length
+  );
+  protected $activeRes = computed(() => {
+    const now = new Date();
+    return this.$reservations().filter(r =>
+      new Date(r.checkInDate) <= now && new Date(r.checkOutDate) >= now
+    ).length;
+  });
+  protected $totalRevenue = computed(() =>
+    this.$reservations().reduce((sum, r) => {
+      if (!r.room?.priceDto) return sum;
+      const nights = Math.max(1, Math.round(
+        (new Date(r.checkOutDate).getTime() - new Date(r.checkInDate).getTime()) / 86400000
+      ));
+      return sum + nights * r.room.priceDto;
+    }, 0)
+  );
+
+  // ── Fila estática  expandible ──────────────────────────────────────────────────
   protected $expandedId = signal<number | null>(null);
   protected $loadingId = signal<number | null>(null);
   protected $servicesCache = signal(new Map<number, ReservationAdditionalService[]>());
@@ -118,7 +142,7 @@ export class ReservationManagerComponent {
     });
   }
 
-  // ── Expand / collapse ──────────────────────────────────────────
+  // ── Expandir / collapsar ──────────────────────────────────────────
   toggleRow(reservation: Reservation) {
     const id = reservation.idReservation!;
 
@@ -149,7 +173,7 @@ export class ReservationManagerComponent {
     return this.servicesOf(id).reduce((acc, s) => acc + (s.totalPriceDto ?? 0), 0);
   }
 
-  // ── Dialog — invalidates cache on close ──────────────────────────────────
+  // ── Dialog — Invalida caché al cerrar ──────────────────────────────────
   openServices(reservation: Reservation) {
     this.dialog.open(ReservationServicesDialogComponent, {
       width: '900px',
@@ -204,7 +228,7 @@ export class ReservationManagerComponent {
           tap(() => this.reservationService.setMessageChange('CREATED')),
           finalize(() => this.$isSaving.set(false))
         ).subscribe({
-          next: () => this.resetForm(),
+          next: () => { this.resetForm(); this.$showForm.set(false); },
           error: (err) => this.$conflictError.set(err?.error?.message ?? 'Error al guardar la reserva.'),
         });
       },
@@ -231,7 +255,12 @@ export class ReservationManagerComponent {
   }
 
   resetForm() {
-    this.$form().reset();
+    this.$form.set(new FormGroup({
+      customerName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+      room: new FormControl<Room | null>(null, [Validators.required]),
+      checkInDate: new FormControl<string>('', [Validators.required]),
+      checkOutDate: new FormControl<string>('', [Validators.required]),
+    }, { validators: checkOutAfterCheckIn }));
     this.$conflictError.set('');
   }
 

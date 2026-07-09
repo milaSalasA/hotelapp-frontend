@@ -1,42 +1,123 @@
-<div class="dashboard-container">
-    <mat-card class="welcome-card">
-      <mat-card-header>
-        <div mat-card-avatar class="welcome-avatar">
-          <mat-icon>person</mat-icon>
+<!-- ── Welcome banner ── -->
+<div class="welcome-banner">
+  <div>
+    <h2>¡Bienvenido, {{ $userInfo().username || 'Recepcionista' }}! 👋</h2>
+    <p>{{ today | date:"EEEE d 'de' MMMM" : '' : 'es-AR' | titlecase }} — Tu centro de control del hotel</p>
+  </div>
+  <div class="welcome-icon">
+    <mat-icon>hotel</mat-icon>
+  </div>
+</div>
+
+<!-- ── KPI grid ── -->
+<div class="ux-stat-grid">
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon cy"><mat-icon>event_available</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">{{ $totalRes() }}</div>
+      <div class="ux-stat-label">Reservas registradas</div>
+    </div>
+  </div>
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon gr"><mat-icon>hotel</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">{{ $availableRooms() }}</div>
+      <div class="ux-stat-label">Habitaciones disponibles</div>
+    </div>
+  </div>
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon am"><mat-icon>people</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">{{ $activeRes() }}</div>
+      <div class="ux-stat-label">Huéspedes activos</div>
+    </div>
+  </div>
+  <div class="ux-stat-card">
+    <div class="ux-stat-icon pu"><mat-icon>payments</mat-icon></div>
+    <div>
+      <div class="ux-stat-value">{{ $revenue() | currency:'PEN':'S/ ':'1.0-0' }}</div>
+      <div class="ux-stat-label">Ingresos estimados</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Quick actions ── -->
+<div class="section-title">Acciones Rápidas</div>
+<div class="quick-actions-grid">
+  <div class="qac" routerLink="/pages/reservation-manager">
+    <div class="qac-icon cy"><mat-icon>add_circle</mat-icon></div>
+    <p>Nueva Reserva</p>
+    <span>Registrar huésped</span>
+  </div>
+  <div class="qac" routerLink="/pages/room-manager">
+    <div class="qac-icon gr"><mat-icon>hotel</mat-icon></div>
+    <p>Habitaciones</p>
+    <span>Ver disponibilidad</span>
+  </div>
+  <div class="qac" routerLink="/pages/report">
+    <div class="qac-icon am"><mat-icon>bar_chart</mat-icon></div>
+    <p>Reportes</p>
+    <span>Ver estadísticas</span>
+  </div>
+  <div class="qac" routerLink="/pages/service-manager">
+    <div class="qac-icon pu"><mat-icon>room_service</mat-icon></div>
+    <p>Servicios</p>
+    <span>Gestionar catálogo</span>
+  </div>
+</div>
+
+<!-- ── Bottom grid ── -->
+<div class="bottom-grid">
+
+  <!-- Recent reservations -->
+  <div class="ux-card">
+    <div class="ux-card-header">
+      <span class="ux-card-title">Actividad Reciente</span>
+      <a routerLink="/pages/reservation-manager" class="card-link">Ver todas</a>
+    </div>
+    @for (r of $recentActivity(); track r.idReservation) {
+      <div class="activity-item">
+        <div class="act-dot" [class.dot-active]="isActive(r.checkInDate, r.checkOutDate)"></div>
+        <div class="act-text">
+          <strong>{{ r.customerName }}</strong>
+          <span>Hab. {{ r.room?.numberDto }} — {{ r.room?.typeDto }}</span>
         </div>
-        <mat-card-title>¡Bienvenido de nuevo!</mat-card-title>
-        <mat-card-subtitle>{{$userInfo().username}}</mat-card-subtitle>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <p class="welcome-text">
-          Estamos encantados de verte de nuevo en <strong>HOTELAPP</strong>. 
-          Este es tu centro de control donde puedes gestionar reservas, habitaciones y más de manera eficiente.
-        </p>
-        
-        <mat-divider></mat-divider>
-        
-        <div class="quick-actions">
-          <h3>Acciones Rápidas</h3>
-          <div class="actions-grid">
-            <button mat-flat-button color="primary" routerLink="/pages/reservation-manager">
-              <mat-icon>event</mat-icon>
-              Reservas
-            </button>
-            <button mat-flat-button color="accent" routerLink="/pages/room-manager">
-              <mat-icon>hotel</mat-icon>
-              Habitaciones
-            </button>
-            <button mat-stroked-button routerLink="/pages/report">
-              <mat-icon>bar_chart</mat-icon>
-              Reportes
-            </button>
+        <span class="act-date">{{ r.checkInDate | slice:0:10 }}</span>
+      </div>
+    } @empty {
+      <div class="activity-empty">
+        <mat-icon>event_busy</mat-icon>
+        <p>Sin reservas recientes</p>
+      </div>
+    }
+  </div>
+
+  <!-- Occupation by type -->
+  <div class="ux-card">
+    <div class="ux-card-header">
+      <span class="ux-card-title">Ocupación por Tipo</span>
+      <span class="stat-total">{{ $occupiedRooms() }} / {{ $rooms().length }} ocupadas</span>
+    </div>
+    <div class="occ-list">
+      @for (t of $roomsByType(); track t.type) {
+        <div class="occ-row">
+          <div class="occ-header-row">
+            <span class="occ-type">{{ t.type }}</span>
+            <span class="occ-count">{{ t.occupied }} / {{ t.total }}</span>
+          </div>
+          <div class="occ-bar-bg">
+            <div class="occ-bar-fill"
+                 [style.width.%]="t.total > 0 ? (t.occupied / t.total) * 100 : 0">
+            </div>
           </div>
         </div>
-      </mat-card-content>
-      
-      <mat-card-footer class="welcome-footer">
-        <small>Sesión iniciada correctamente</small>
-      </mat-card-footer>
-    </mat-card>
+      } @empty {
+        <div class="activity-empty">
+          <mat-icon>hotel</mat-icon>
+          <p>Sin habitaciones registradas</p>
+        </div>
+      }
+    </div>
   </div>
+
+</div>
