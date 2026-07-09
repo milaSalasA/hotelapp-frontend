@@ -5,6 +5,8 @@ import { ReportComponent } from './report/report.component';
 import { ReservationManagerComponent } from './reservation-manager/reservation-manager.component';
 import { RoomManagerComponent } from './room-manager/room-manager.component';
 import { RoomManagerEditComponent } from './room-manager/room-manager-edit/room-manager-edit.component';
+import { ServiceManagerComponent } from './service-manager/service-manager.component';
+import { ServiceManagerEditComponent } from './service-manager/service-manager-edit/service-manager-edit.component';
 
 export const pagesRoutes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [certGuard] },
@@ -19,5 +21,14 @@ export const pagesRoutes = [
   },
   { path: 'reservation-manager', component: ReservationManagerComponent, canActivate: [certGuard] },
   { path: 'report', component: ReportComponent, canActivate: [certGuard] },
+  {
+    path: 'service-manager',
+    component: ServiceManagerComponent,
+    children: [
+      { path: 'new', component: ServiceManagerEditComponent },
+      { path: 'edit/:id', component: ServiceManagerEditComponent },
+    ],
+    canActivate: [certGuard]
+  },
   { path: 'not-403', component: Not403Component },
 ];

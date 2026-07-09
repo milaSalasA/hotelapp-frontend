@@ -1,0 +1,62 @@
+<form [formGroup]="$form()" (submit)="operate()" class="form-container" #frmService="ngForm">
+
+  <div [hidden]="true">
+    <mat-form-field>
+      <input matInput formControlName="idService">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <mat-label>Nombre del servicio</mat-label>
+    <input matInput placeholder="e.g. Desayuno continental" formControlName="nameDto">
+    @if ($f()['nameDto'].errors?.['required'] && $f()['nameDto'].touched) {
+      <small class="invalid">Es obligatorio</small>
+    }
+    @if ($f()['nameDto'].errors?.['minlength'] && $f()['nameDto'].touched) {
+      <small class="invalid">Mínimo 2 caracteres</small>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Descripción</mat-label>
+    <input matInput placeholder="Descripción breve del servicio" formControlName="descriptionDto">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Precio</mat-label>
+    <input matInput type="number" placeholder="0.00" formControlName="priceDto">
+    @if ($f()['priceDto'].errors?.['required'] && $f()['priceDto'].touched) {
+      <small class="invalid">Es obligatorio</small>
+    }
+    @if ($f()['priceDto'].errors?.['min'] && $f()['priceDto'].touched) {
+      <small class="invalid">El precio debe ser positivo</small>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Categoría</mat-label>
+    <mat-select formControlName="categoryDto">
+      @for (cat of categories; track cat.value) {
+        <mat-option [value]="cat.value">{{ cat.label }}</mat-option>
+      }
+    </mat-select>
+    @if ($f()['categoryDto'].errors?.['required'] && $f()['categoryDto'].touched) {
+      <small class="invalid">Seleccione una categoría</small>
+    }
+  </mat-form-field>
+
+  <mat-checkbox formControlName="availableDto">Disponible</mat-checkbox>
+
+  <div class="button-container">
+    <button mat-flat-button type="submit" [disabled]="frmService.invalid">
+      <span>OK</span>
+      <mat-icon>done</mat-icon>
+    </button>
+
+    <button mat-flat-button type="button" class="cancel-button" routerLink="/pages/service-manager">
+      <span>Cancelar</span>
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </div>
+
+</form>

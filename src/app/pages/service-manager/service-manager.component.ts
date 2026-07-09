@@ -11,13 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { filter, switchMap, tap } from 'rxjs';
-import { Room } from '../../model/room';
-import { RoomService } from '../../services/room.service';
+import { AdditionalService } from '../../model/additional-service';
+import { AdditionalServiceService } from '../../services/additional-service.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { RoomPhotosDialogComponent } from './room-photos-dialog/room-photos-dialog.component';
 
 @Component({
-  selector: 'app-room-manager',
+  selector: 'app-service-manager',
   imports: [
     MatTableModule,
     MatButtonModule,
@@ -31,29 +30,36 @@ import { RoomPhotosDialogComponent } from './room-photos-dialog/room-photos-dial
     RouterLink,
     RouterOutlet,
   ],
-  templateUrl: './room-manager.component.html',
-  styleUrl: './room-manager.component.css',
+  templateUrl: './service-manager.component.html',
+  styleUrl: './service-manager.component.css',
 })
-export class RoomManagerComponent {
-  private readonly roomService = inject(RoomService);
+export class ServiceManagerComponent {
+  private readonly serviceService = inject(AdditionalServiceService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
-  protected $dataSource = signal(new MatTableDataSource<Room>());
-  protected displayedColumns: string[] = ['idRoom', 'numberDto', 'typeDto', 'priceDto', 'availableDto', 'photos', 'actions'];
-  protected $rooms = this.roomService.$listChange;
+  protected $dataSource = signal(new MatTableDataSource<AdditionalService>());
+  protected displayedColumns: string[] = ['idService', 'nameDto', 'categoryDto', 'priceDto', 'availableDto', 'actions'];
+  protected $services = this.serviceService.$listChange;
 
   protected $paginator = viewChild(MatPaginator);
   protected $sort = viewChild(MatSort);
 
+  protected readonly categoryLabels: Record<string, string> = {
+    FOOD: 'Comida',
+    BEVERAGE: 'Bebida',
+    PERSONAL_CARE: 'Cuidado Personal',
+    OTHER: 'Otro',
+  };
+
   constructor() {
-    this.roomService.findAll().subscribe(data => this.roomService.setListChange(data));
+    this.serviceService.findAll().subscribe(data => this.serviceService.setListChange(data));
     this.initializeEffects();
   }
 
   private initializeEffects() {
     effect(() => {
-      const data = this.$rooms();
+      const data = this.$services();
       const ds = this.$dataSource();
       ds.data = data;
       ds.paginator = this.$paginator();
@@ -61,10 +67,10 @@ export class RoomManagerComponent {
     });
 
     effect(() => {
-      const message = this.roomService.$messageChange();
+      const message = this.serviceService.$messageChange();
       if (message) {
         this.snackBar.open(message, 'INFO', { duration: 2000, horizontalPosition: 'right', verticalPosition: 'top' });
-        untracked(() => this.roomService.setMessageChange(''));
+        untracked(() => this.serviceService.setMessageChange(''));
       }
     });
   }
@@ -74,29 +80,22 @@ export class RoomManagerComponent {
     this.$dataSource().filter = filterValue.trim().toLowerCase();
   }
 
-  toggleAvailability(room: Room) {
-    const updated: Room = { ...room, availableDto: !room.availableDto };
-    this.roomService.update(room.idRoom, updated).pipe(
-      switchMap(() => this.roomService.findAll()),
-      tap(data => this.roomService.setListChange(data)),
-      tap(() => this.roomService.setMessageChange(updated.availableDto ? 'DISPONIBLE' : 'NO DISPONIBLE'))
+  toggleAvailability(svc: AdditionalService) {
+    const updated: AdditionalService = { ...svc, availableDto: !svc.availableDto };
+    this.serviceService.update(svc.idService!, updated).pipe(
+      switchMap(() => this.serviceService.findAll()),
+      tap(data => this.serviceService.setListChange(data)),
+      tap(() => this.serviceService.setMessageChange(updated.availableDto ? 'DISPONIBLE' : 'NO DISPONIBLE'))
     ).subscribe();
   }
 
-  openPhotos(room: Room) {
-    this.dialog.open(RoomPhotosDialogComponent, {
-      width: '680px',
-      maxWidth: '95vw',
-      data: { roomId: room.idRoom, roomNumber: room.numberDto },
-    });
-  }
-
-  delete(idRoom: number) {    this.dialog.open(ConfirmDialogComponent).afterClosed().pipe(
+  delete(idService: number) {
+    this.dialog.open(ConfirmDialogComponent).afterClosed().pipe(
       filter(result => result),
-      switchMap(() => this.roomService.delete(idRoom)),
-      switchMap(() => this.roomService.findAll()),
-      tap(data => this.roomService.setListChange(data)),
-      tap(() => this.roomService.setMessageChange('DELETED'))
+      switchMap(() => this.serviceService.delete(idService)),
+      switchMap(() => this.serviceService.findAll()),
+      tap(data => this.serviceService.setListChange(data)),
+      tap(() => this.serviceService.setMessageChange('DELETED'))
     ).subscribe();
   }
 }

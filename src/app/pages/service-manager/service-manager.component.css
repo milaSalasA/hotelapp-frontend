@@ -1,0 +1,58 @@
+table {
+  width: 100%;
+}
+
+.filter-field {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-available {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.badge-occupied {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #e57373;
+  border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+.category-FOOD {
+  background-color: rgba(255, 152, 0, 0.15);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.35);
+}
+
+.category-BEVERAGE {
+  background-color: rgba(33, 150, 243, 0.15);
+  color: #64b5f6;
+  border: 1px solid rgba(33, 150, 243, 0.35);
+}
+
+.category-PERSONAL_CARE {
+  background-color: rgba(156, 39, 176, 0.15);
+  color: #ce93d8;
+  border: 1px solid rgba(156, 39, 176, 0.35);
+}
+
+.category-OTHER {
+  background-color: rgba(158, 158, 158, 0.15);
+  color: #bdbdbd;
+  border: 1px solid rgba(158, 158, 158, 0.35);
+}
+
+.fab-container {
+  padding: 8px 16px 16px;
+  display: flex;
+  justify-content: flex-end;
+}

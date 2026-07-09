@@ -85,3 +85,124 @@
 table {
   width: 100%;
 }
+
+/* ── Expand chevron column ── */
+.expand-cell {
+  width: 40px;
+  padding: 0 4px;
+}
+
+.chevron-btn mat-icon {
+  transition: transform 220ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.chevron-open mat-icon {
+  transform: rotate(90deg);
+}
+
+/* ── Data row highlight when expanded ── */
+.data-row.row-expanded {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid var(--mat-sys-primary);
+}
+
+/* ── Detail row ── */
+.detail-row td {
+  padding: 0;
+  border-bottom: none;
+}
+
+.detail-cell {
+  padding: 0 !important;
+}
+
+.detail-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 220ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              opacity 180ms ease;
+}
+
+.detail-wrapper.detail-expanded {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.detail-inner {
+  padding: 12px 20px 16px 56px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+/* ── Loading / empty states ── */
+.detail-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+  padding: 4px 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* ── Service chips ── */
+.detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.svc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.82rem;
+}
+
+.svc-name {
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+.svc-qty {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.78rem;
+}
+
+.svc-price {
+  color: #81c784;
+  font-weight: 600;
+}
+
+.svc-notes {
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+  font-size: 0.78rem;
+}
+
+/* ── Detail total ── */
+.detail-total {
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  padding-top: 4px;
+}
+
+.detail-total strong {
+  color: #81c784;
+  margin-left: 6px;
+}

@@ -14,6 +14,9 @@ Once the server is running, open your browser and navigate to `http://localhost:
 
 ## Instalaciones en la terminal
 ```bash
+npm i
+```
+```bash
 ng add @angular/material
 ```
 ```bash

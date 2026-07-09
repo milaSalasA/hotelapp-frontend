@@ -1,0 +1,114 @@
+<h2 mat-dialog-title>
+  <mat-icon>room_service</mat-icon>
+  Servicios — {{ customerName }}
+</h2>
+
+<mat-dialog-content>
+
+  <!-- Tabla de servicios ya agregados -->
+  @if ($services().length > 0) {
+    <table mat-table [dataSource]="$services()" class="services-table">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>SERVICIO</th>
+        <td mat-cell *matCellDef="let row">{{ row.additionalService?.nameDto }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef>CATEGORÍA</th>
+        <td mat-cell *matCellDef="let row">
+          {{ categoryLabels[row.additionalService?.categoryDto] }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="qty">
+        <th mat-header-cell *matHeaderCellDef>CANT.</th>
+        <td mat-cell *matCellDef="let row">{{ row.quantityDto }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="unitPrice">
+        <th mat-header-cell *matHeaderCellDef>P. UNIT.</th>
+        <td mat-cell *matCellDef="let row">{{ row.additionalService?.priceDto | currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>TOTAL</th>
+        <td mat-cell *matCellDef="let row"><strong>{{ row.totalPriceDto | currency }}</strong></td>
+      </ng-container>
+
+      <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef>NOTAS</th>
+        <td mat-cell *matCellDef="let row">{{ row.notesDto || '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="warn" title="Quitar" (click)="remove(row.idReservationService)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="total-row">
+      <strong>TOTAL SERVICIOS:</strong>
+      <span class="total-amount">{{ $grandTotal() | currency }}</span>
+    </div>
+  } @else {
+    <p class="empty-msg">
+      <mat-icon>info</mat-icon>
+      No hay servicios adicionales registrados para esta reserva.
+    </p>
+  }
+
+  <mat-divider class="divider"></mat-divider>
+
+  <!-- Formulario para agregar servicio -->
+  <h3 class="add-title">Agregar servicio</h3>
+  <form [formGroup]="$addForm()" (ngSubmit)="add()" class="add-form">
+
+    <mat-form-field appearance="outline" class="field-service">
+      <mat-label>Servicio</mat-label>
+      <mat-select formControlName="additionalService">
+        @for (svc of $catalog(); track svc.idService) {
+          <mat-option [value]="svc">
+            {{ svc.nameDto }} — {{ svc.priceDto | currency }}
+          </mat-option>
+        }
+        @if ($catalog().length === 0) {
+          <mat-option disabled>No hay servicios disponibles</mat-option>
+        }
+      </mat-select>
+      @if ($f()['additionalService'].touched && $f()['additionalService'].hasError('required')) {
+        <mat-error>Seleccione un servicio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-qty">
+      <mat-label>Cantidad</mat-label>
+      <input matInput type="number" formControlName="quantityDto" min="1">
+      @if ($f()['quantityDto'].touched && $f()['quantityDto'].hasError('min')) {
+        <mat-error>Mínimo 1</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-notes">
+      <mat-label>Notas (opcional)</mat-label>
+      <input matInput placeholder="Ej: Sin azúcar" formControlName="notesDto">
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="$isSaving()">
+      <mat-icon>add</mat-icon>
+      {{ $isSaving() ? 'Guardando...' : 'Agregar' }}
+    </button>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

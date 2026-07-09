@@ -1,0 +1,90 @@
+h2[mat-dialog-title] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 20px 24px 12px;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.profile-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 8px 0 16px;
+  min-width: 300px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(var(--mat-sys-primary-rgb, 0 188 212) / 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar mat-icon {
+  font-size: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  color: var(--mat-sys-primary);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-icon {
+  color: var(--mat-sys-on-surface-variant);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.info-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.4px;
+  margin-bottom: 2px;
+}
+
+.info-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+.roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.role-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: rgba(var(--mat-sys-primary-rgb, 0 188 212) / 0.15);
+  color: var(--mat-sys-primary);
+  border: 1px solid rgba(var(--mat-sys-primary-rgb, 0 188 212) / 0.3);
+}

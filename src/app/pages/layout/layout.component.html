@@ -8,7 +8,7 @@
             }
         </button>
 
-        <span>HOTELAPP</span>
+        <span class="app-title" [routerLink]="['/pages/dashboard']">HOTELAPP</span>
 
         <span class="example-spacer"></span>
 
@@ -17,7 +17,7 @@
         </button>
 
         <mat-menu #menu="matMenu">
-            <button mat-menu-item>
+            <button mat-menu-item (click)="openAccount()">
                 <mat-icon>account_box</mat-icon>
                 <span>My account</span>
             </button>
@@ -31,7 +31,8 @@
     <mat-sidenav-container class="example-sidenav-container">
         <mat-sidenav #sidenav style="width: 250px" mode="push">
 
-            <img src="milanesacode.png" width="128" style="margin-left: 20px">
+            <img src="milanesacode.png" width="128" style="margin-left: 20px; cursor: pointer;"
+                 [routerLink]="['/pages/dashboard']" (click)="sidenav.close()">
 
             @for (m of $menus(); track $index) {
                 <mat-divider></mat-divider>

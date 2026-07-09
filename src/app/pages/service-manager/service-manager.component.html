@@ -1,0 +1,78 @@
+<router-outlet></router-outlet>
+
+<mat-form-field appearance="outline" class="filter-field">
+  <mat-label>Buscar servicio</mat-label>
+  <mat-icon matPrefix>search</mat-icon>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Nombre, categoría..." #input>
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="$dataSource()" matSort>
+
+    <ng-container matColumnDef="idService">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let row">{{ row.idService }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="nameDto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>NOMBRE</th>
+      <td mat-cell *matCellDef="let row">{{ row.nameDto }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="categoryDto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>CATEGORÍA</th>
+      <td mat-cell *matCellDef="let row">
+        <span class="badge category-{{ row.categoryDto }}">
+          {{ categoryLabels[row.categoryDto] }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="priceDto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>PRECIO</th>
+      <td mat-cell *matCellDef="let row">{{ row.priceDto | currency }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="availableDto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ESTADO</th>
+      <td mat-cell *matCellDef="let row">
+        <span class="badge" [class.badge-available]="row.availableDto" [class.badge-occupied]="!row.availableDto">
+          {{ row.availableDto ? 'Activo' : 'Inactivo' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button title="Editar" [routerLink]="['edit', row.idService]">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button
+          [title]="row.availableDto ? 'Desactivar' : 'Activar'"
+          [color]="row.availableDto ? 'warn' : 'primary'"
+          (click)="toggleAvailability(row)">
+          <mat-icon>{{ row.availableDto ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" title="Eliminar" (click)="delete(row.idService)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="6">No hay servicios que coincidan con "{{ input.value }}"</td>
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Páginas de servicios"></mat-paginator>
+
+  <div class="fab-container">
+    <button mat-fab color="primary" routerLink="new" title="Nuevo Servicio">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  padding: 16px;
+}
+
+.form-container > * {
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.button-container button {
+  width: auto;
+}
+
+.invalid {
+  color: red;
+  font-size: 12px;
+}

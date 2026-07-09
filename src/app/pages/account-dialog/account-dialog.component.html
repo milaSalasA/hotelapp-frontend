@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>
+  <mat-icon>account_circle</mat-icon>
+  My Account
+</h2>
+
+<mat-dialog-content>
+  @if ($loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="36"></mat-spinner>
+    </div>
+  } @else if ($profile(); as profile) {
+    <div class="profile-section">
+      <div class="avatar">
+        <mat-icon>person</mat-icon>
+      </div>
+      <div class="info">
+        <div class="info-row">
+          <mat-icon class="info-icon">badge</mat-icon>
+          <div>
+            <span class="info-label">Usuario</span>
+            <span class="info-value">{{ profile.username }}</span>
+          </div>
+        </div>
+        <div class="info-row">
+          <mat-icon class="info-icon">shield</mat-icon>
+          <div>
+            <span class="info-label">Roles</span>
+            <div class="roles-list">
+              @for (role of profile.roles; track role) {
+                <span class="role-chip">{{ role }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

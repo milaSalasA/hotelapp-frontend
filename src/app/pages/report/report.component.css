@@ -198,3 +198,188 @@
   border: 1px solid var(--mat-sys-outline-variant);
   margin-top: 4px;
 }
+
+/* ── KPI Strip ── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .kpi-strip { grid-template-columns: 1fr; }
+}
+
+.kpi-card {
+  background: var(--mat-sys-surface-container);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.kpi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.kpi-icon--primary { background: rgba(var(--mat-sys-primary-rgb, 0 188 212) / 0.15); color: var(--mat-sys-primary); }
+.kpi-icon--green   { background: rgba(72, 187, 120, 0.15); color: #81c784; }
+.kpi-icon--amber   { background: rgba(246, 173, 85, 0.15); color: #ffb74d; }
+.kpi-icon--purple  { background: rgba(182, 120, 230, 0.15); color: #ce93d8; }
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  line-height: 1.2;
+}
+
+.kpi-value--text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.kpi-label {
+  font-size: 0.78rem;
+  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.3px;
+}
+
+/* ── Amber dot variant ── */
+.dot--amber {
+  background: #ffb74d;
+}
+
+/* ── Top Services Table ── */
+.top-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.top-table th {
+  text-align: left;
+  padding: 8px 12px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.top-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--mat-sys-on-surface);
+}
+
+.top-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.top-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rank {
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 700;
+  width: 32px;
+}
+
+.service-name {
+  font-weight: 500;
+}
+
+.revenue {
+  font-weight: 600;
+  color: #81c784;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.cat-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.cat-FOOD         { background: rgba(246,173,85,0.15); color: #ffb74d; border: 1px solid rgba(246,173,85,0.3); }
+.cat-BEVERAGE     { background: rgba(99,179,237,0.15); color: #64b5f6; border: 1px solid rgba(99,179,237,0.3); }
+.cat-PERSONAL_CARE{ background: rgba(182,120,230,0.15); color: #ce93d8; border: 1px solid rgba(182,120,230,0.3); }
+.cat-OTHER        { background: rgba(158,158,158,0.15); color: #bdbdbd; border: 1px solid rgba(158,158,158,0.3); }
+
+/* ── Skeleton base ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.sk {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.10) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+/* ── Skeleton shapes ── */
+.sk-icon    { width: 40px; height: 40px; border-radius: 10px; }
+.sk-value   { width: 80px; height: 22px; margin: 6px auto 4px; }
+.sk-label   { width: 110px; height: 13px; margin: 0 auto; }
+.sk-dot     { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sk-title   { width: 180px; height: 13px; }
+.sk-btn     { width: 64px; height: 32px; border-radius: 20px; }
+.sk-chart   { width: 100%; height: 380px; border-radius: 8px; margin-top: 4px; }
+.sk-placeholder { width: 100%; height: 130px; border-radius: 8px; }
+.sk-cell-sm { width: 32px;  height: 14px; border-radius: 4px; }
+.sk-cell-md { width: 100px; height: 14px; border-radius: 4px; }
+.sk-cell-lg { width: 180px; height: 14px; border-radius: 4px; }
+
+/* ── Skeleton card (mirrors .kpi-card) ── */
+.skeleton-card {
+  align-items: center;
+}
+
+/* ── Skeleton toggle row ── */
+.sk-toggle-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* ── Skeleton table row ── */
+.sk-table-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sk-table-row:last-child {
+  border-bottom: none;
+}

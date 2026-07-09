@@ -21,6 +21,11 @@
     color: var(--mat-sys-on-primary-container) !important;
 }
 
+.app-title {
+    cursor: pointer;
+    user-select: none;
+}
+
 .myButton:focus {
     box-shadow: 0 0 0 2px var(--mat-sys-primary) !important;
     transition: none !important;

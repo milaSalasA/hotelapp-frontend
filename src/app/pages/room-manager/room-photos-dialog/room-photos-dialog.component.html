@@ -1,0 +1,86 @@
+<h2 mat-dialog-title>
+  <mat-icon>photo_library</mat-icon>
+  Fotos — Habitación N° {{ roomNumber }}
+</h2>
+
+<mat-dialog-content>
+
+  <!-- Loading skeletons -->
+  @if ($loading()) {
+    <div class="photo-grid">
+      @for (_ of [1,2,3,4]; track $index) {
+        <div class="photo-skeleton"></div>
+      }
+    </div>
+
+  <!-- Empty state -->
+  } @else if (!$hasImages()) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">image_not_supported</mat-icon>
+      <p>No hay fotos registradas para esta habitación.</p>
+      <p class="empty-hint">Pega una URL de imagen en el campo de abajo.</p>
+    </div>
+
+  <!-- Gallery grid -->
+  } @else {
+    <div class="photo-grid">
+      @for (img of $images(); track img.idFile) {
+        <div class="photo-card">
+          <img [src]="img.url" [alt]="img.fileName"
+               (click)="openLightbox(img.url)"
+               (error)="onImgError($event)">
+          <div class="photo-overlay">
+            <button mat-icon-button class="zoom-btn" (click)="openLightbox(img.url)" title="Ver">
+              <mat-icon>zoom_in</mat-icon>
+            </button>
+            <button mat-icon-button class="del-btn"
+                    [disabled]="$deletingId() === img.idFile"
+                    (click)="delete(img)" title="Eliminar">
+              @if ($deletingId() === img.idFile) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <mat-icon>delete</mat-icon>
+              }
+            </button>
+          </div>
+          <span class="photo-name">{{ img.fileName }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- URL input -->
+  <div class="url-row">
+    <mat-form-field appearance="outline" class="url-field">
+      <mat-label>URL de imagen</mat-label>
+      <mat-icon matPrefix>link</mat-icon>
+      <input matInput [formControl]="urlControl" placeholder="https://...">
+      @if (urlControl.touched && urlControl.hasError('required')) {
+        <mat-error>Ingresá una URL</mat-error>
+      }
+      @if (urlControl.touched && urlControl.hasError('pattern')) {
+        <mat-error>Debe comenzar con http:// o https://</mat-error>
+      }
+    </mat-form-field>
+    <button mat-flat-button [disabled]="$saving()" (click)="addUrl()">
+      <mat-spinner diameter="18" [hidden]="!$saving()"></mat-spinner>
+      <mat-icon [hidden]="$saving()">add_photo_alternate</mat-icon>
+      <span [hidden]="$saving()">Agregar</span>
+    </button>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>
+
+<!-- Lightbox overlay -->
+@if ($lightbox()) {
+  <div class="lightbox" (click)="closeLightbox()">
+    <button mat-icon-button class="lightbox-close" (click)="closeLightbox()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <img [src]="$lightbox()!" (click)="$event.stopPropagation()">
+  </div>
+}

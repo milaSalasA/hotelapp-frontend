@@ -24,6 +24,6 @@ export class DashboardComponent {
 
   private readonly loginService = inject(LoginService);
 
-  protected $userInfo = toSignal(this.loginService.showUserInfo(), { initialValue: { username: '' } });
+  protected $userInfo = toSignal(this.loginService.showUserInfo(), { initialValue: { username: '', roles: [] as string[] } });
 
 }

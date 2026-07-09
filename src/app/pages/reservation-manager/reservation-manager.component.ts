@@ -16,9 +16,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, finalize, switchMap, tap } from 'rxjs';
 import { Room } from '../../model/room';
 import { Reservation } from '../../model/reservation';
+import { ReservationAdditionalService } from '../../model/reservation-additional-service';
 import { RoomService } from '../../services/room.service';
 import { ReservationService } from '../../services/reservation.service';
+import { ReservationAdditionalServiceService } from '../../services/reservation-additional-service.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ReservationServicesDialogComponent } from './reservation-services-dialog/reservation-services-dialog.component';
 
 function checkOutAfterCheckIn(control: AbstractControl): ValidationErrors | null {
   const checkIn = control.get('checkInDate')?.value;
@@ -52,6 +55,7 @@ function checkOutAfterCheckIn(control: AbstractControl): ValidationErrors | null
 export class ReservationManagerComponent {
   private readonly roomService = inject(RoomService);
   private readonly reservationService = inject(ReservationService);
+  private readonly rasService = inject(ReservationAdditionalServiceService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
@@ -70,10 +74,19 @@ export class ReservationManagerComponent {
   protected $isSaving = signal(false);
 
   protected $dataSource = signal(new MatTableDataSource<Reservation>());
-  protected displayedColumns: string[] = ['idReservation', 'customerName', 'checkInDate', 'checkOutDate', 'roomNumber', 'actions'];
+  protected displayedColumns = ['expand', 'idReservation', 'customerName', 'checkInDate', 'checkOutDate', 'roomNumber', 'actions', 'services'];
+  protected detailColumns = ['expandedDetail'];
   protected $reservations = this.reservationService.$listChange;
   protected $paginator = viewChild(MatPaginator);
   protected $sort = viewChild(MatSort);
+
+  // ── Expandable row state ──────────────────────────────────────────────────
+  protected $expandedId = signal<number | null>(null);
+  protected $loadingId = signal<number | null>(null);
+  protected $servicesCache = signal(new Map<number, ReservationAdditionalService[]>());
+
+  protected readonly isExpandedRow = (_: number, row: Reservation) =>
+    this.$expandedId() === row.idReservation;
 
   constructor() {
     this.reservationService.findAll().subscribe(data => this.reservationService.setListChange(data));
@@ -97,7 +110,6 @@ export class ReservationManagerComponent {
       }
     });
 
-    // Clear conflict error when room or dates change
     effect(() => {
       this.$f().room.value;
       this.$f().checkInDate.value;
@@ -106,6 +118,54 @@ export class ReservationManagerComponent {
     });
   }
 
+  // ── Expand / collapse ──────────────────────────────────────────
+  toggleRow(reservation: Reservation) {
+    const id = reservation.idReservation!;
+
+    if (this.$expandedId() === id) {
+      this.$expandedId.set(null);
+      return;
+    }
+
+    this.$expandedId.set(id);
+
+    if (!this.$servicesCache().has(id)) {
+      this.$loadingId.set(id);
+      this.rasService.findByReservation(id).subscribe({
+        next: data => {
+          this.$servicesCache.update(cache => new Map(cache).set(id, data));
+          this.$loadingId.set(null);
+        },
+        error: () => this.$loadingId.set(null),
+      });
+    }
+  }
+
+  servicesOf(id: number): ReservationAdditionalService[] {
+    return this.$servicesCache().get(id) ?? [];
+  }
+
+  totalOf(id: number): number {
+    return this.servicesOf(id).reduce((acc, s) => acc + (s.totalPriceDto ?? 0), 0);
+  }
+
+  // ── Dialog — invalidates cache on close ──────────────────────────────────
+  openServices(reservation: Reservation) {
+    this.dialog.open(ReservationServicesDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      data: { reservationId: reservation.idReservation, customerName: reservation.customerName },
+    }).afterClosed().subscribe(() => {
+      const id = reservation.idReservation!;
+      if (this.$servicesCache().has(id)) {
+        this.rasService.findByReservation(id).subscribe(data => {
+          this.$servicesCache.update(cache => new Map(cache).set(id, data));
+        });
+      }
+    });
+  }
+
+  // ── CRUD ─────────────────────────────────────────────────────────────────
   save() {
     const form = this.$form();
     if (form.invalid) {
@@ -145,13 +205,13 @@ export class ReservationManagerComponent {
           finalize(() => this.$isSaving.set(false))
         ).subscribe({
           next: () => this.resetForm(),
-          error: (err) => this.$conflictError.set(err?.error?.message ?? 'Error al guardar la reserva.')
+          error: (err) => this.$conflictError.set(err?.error?.message ?? 'Error al guardar la reserva.'),
         });
       },
       error: () => {
         this.$isSaving.set(false);
         this.$conflictError.set('No se pudo verificar conflictos. Intente nuevamente.');
-      }
+      },
     });
   }
 
